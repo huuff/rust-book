@@ -3,42 +3,49 @@ use std::cmp::Ordering;
 use std::io::{self, Write};
 
 fn main() {
-    println!("Guess the number!");
-    println!("=====");
-
-    let secret_number = rand::thread_rng().gen_range(1..=100);
-    let mut tries: u32 = 0;
-
+    let mut wins: u32 = 0;
     loop {
-        println!("Please input your guess.");
-        print!("> ");
-        let _ = io::stdout().flush();
+        println!("Guess the number!");
+        println!("================");
 
-        let mut guess = String::new();
+        let secret_number = rand::thread_rng().gen_range(1..=100);
+        let mut tries: u32 = 0;
 
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line")
-            ;
+        loop {
+            println!("Please input your guess.");
+            print!("> ");
+            let _ = io::stdout().flush();
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("Not a valid number, try again");
-                continue;
-            },
-        };
-        tries = tries + 1;
+            let mut guess = String::new();
 
-        println!("You guess: {guess}");
+            io::stdin()
+                .read_line(&mut guess)
+                .expect("Failed to read line")
+                ;
 
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("You won in {tries} tries!");
-                break;
+            let guess: u32 = match guess.trim().parse() {
+                Ok(num) => num,
+                Err(_) => {
+                    println!("Not a valid number, try again");
+                    continue;
+                },
+            };
+            tries = tries + 1;
+
+            println!("You guess: {guess}");
+
+            match guess.cmp(&secret_number) {
+                Ordering::Less => println!("Too small!"),
+                Ordering::Greater => println!("Too big!"),
+                Ordering::Equal => {
+                    println!("You won in {tries} tries!");
+                    break;
+                }
             }
         }
+        wins = wins + 1;
+        println!("You've won {wins} times.");
+        println!();
     }
+
 }
