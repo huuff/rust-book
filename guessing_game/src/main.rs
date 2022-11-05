@@ -6,7 +6,7 @@ use std::cmp::Ordering;
 use std::io::{self, Write};
 use words::WORDS;
 use mistakes::MistakeTracker;
-use levels::LEVELS;
+use levels::{LEVELS, Level};
 
 enum Action {
     Play,
@@ -49,7 +49,7 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut stats, current_level);
+                play(&mut stats, &mut current_level);
             }
             Action::Stats => {
                 print_stats(&stats);
@@ -60,15 +60,19 @@ fn main() {
             },
         };
         println!();
-        current_level += 1;
     }
 
 }
 
 // TODO: Print current number of tries
-fn play(stats: &mut Stats, level: usize) {
+fn play(stats: &mut Stats, level: &mut usize) {
+    println!("LEVEL {}", *level + 1);
+    println!("---------");
+    let Level { max_number, max_tries } = &LEVELS[*level];
+    println!("Find the secret number between 1 and {}", max_number);
+
     // TODO: try a smaller type for this
-    let secret_number = LEVELS[level].create_secret_number();
+    let secret_number = LEVELS[*level].create_secret_number();
     let mut tries: u32 = 0;
     let mut mistake_tracker = MistakeTracker::new();
 
@@ -76,7 +80,7 @@ fn play(stats: &mut Stats, level: usize) {
         let guess = get_guess();
         tries += 1;
 
-        println!("You guess: {guess}");
+        println!("Your guess: {guess}");
 
         match guess.cmp(&secret_number) {
             Ordering::Less => {
@@ -98,6 +102,7 @@ fn play(stats: &mut Stats, level: usize) {
         }
     }
     stats.wins += 1;
+    *level += 1;
     match stats.min_tries {
         Some(min) => {
             if tries < min {
