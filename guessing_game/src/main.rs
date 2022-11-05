@@ -126,9 +126,7 @@ fn play(stats: &mut Stats) {
                 println!(
                     "You won in {} {}!",
                     tries,
-                    WORDS.get("try")
-                         .unwrap()
-                         .get_correct_form(tries)
+                    WORDS["try"].get_correct_form(tries)
                 );
                 break;
             }
@@ -151,17 +149,13 @@ fn print_stats(stats: &Stats) {
     println!(
         "You've won {} {}",
         stats.wins,
-        WORDS.get("win")
-             .unwrap()
-             .get_correct_form(stats.wins)
+        WORDS["win"].get_correct_form(stats.wins)
     );
     if let Some(tries) = stats.min_tries {
         println!(
             "Your best game ended in {} {}",
             tries,
-            WORDS.get("try")
-                 .unwrap()
-                 .get_correct_form(tries)
+            WORDS["try"].get_correct_form(tries)
         );
 
     }
