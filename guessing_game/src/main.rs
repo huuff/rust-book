@@ -24,10 +24,16 @@ impl NumberedWord {
     }
 }
 
+struct Stats {
+    wins: u32,
+    min_tries: Option<u32>,
+}
+
 fn main() {
-    // TODO: A Stats struct
-    let mut wins: u32 = 0;
-    let mut min_tries: Option<u32> = None;
+    let mut stats: Stats = Stats {
+        wins: 0,
+        min_tries: None,
+    };
     let mut words: HashMap<String, NumberedWord> = HashMap::new();
     words.insert(
         "try".to_string(),
@@ -67,10 +73,10 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut wins, &mut min_tries, &words);
+                play(&mut stats, &words);
             }
             Action::Stats => {
-                stats(&wins, &min_tries, &words);
+                print_stats(&stats, &words);
             },
             Action::Quit => {
                 println!("Bye!");
@@ -83,8 +89,7 @@ fn main() {
 }
 
 fn play(
-    wins: &mut u32,
-    min_tries: &mut Option<u32>,
+    stats: &mut Stats,
     words: &HashMap<String, NumberedWord>,
     ) {
     // TODO: try a smaller type for this
@@ -109,33 +114,38 @@ fn play(
             }
         }
     }
-    *wins += 1;
-    match min_tries {
+    stats.wins += 1;
+    match stats.min_tries {
         Some(min) => {
-            if tries < *min {
-                *min_tries = Some(tries);
+            if tries < min {
+                stats.min_tries = Some(tries);
             }
         },
         None => {
-            *min_tries = Some(tries);
+            stats.min_tries = Some(tries);
         }
     };
 }
 
-fn stats(
-    wins: &u32,
-    min_tries: &Option<u32>,
+fn print_stats(
+    stats: &Stats,
     words: &HashMap<String, NumberedWord>,
     ) {
-    let wins_word = words.get("win")
-                         .unwrap()
-                         .get_correct_form(*wins);
-    println!("You've won {wins} {wins_word}");
-    if let Some(tries) = min_tries {
-        let min_tries_word = words.get("try")
-                                  .unwrap()
-                                  .get_correct_form(*tries);
-        println!("Your best game ended in {tries} {min_tries_word}")
+    println!(
+        "You've won {} {}",
+        stats.wins,
+        words.get("win")
+             .unwrap()
+             .get_correct_form(stats.wins)
+    );
+    if let Some(tries) = stats.min_tries {
+        println!(
+            "Your best game ended in {} {}",
+            tries,
+            words.get("try")
+                 .unwrap()
+                 .get_correct_form(tries)
+        );
 
     }
 
