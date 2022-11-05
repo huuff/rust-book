@@ -1,5 +1,6 @@
 use rand::Rng;
 
+// TODO: Try to not make it a global. Create it in the main and pass it down
 pub static LEVELS: [Level; 5] = [
     Level {
         max_number: 10,
