@@ -1,11 +1,12 @@
 mod words;
 mod mistakes;
+mod levels;
 
-use rand::Rng;
 use std::cmp::Ordering;
 use std::io::{self, Write};
 use words::WORDS;
 use mistakes::MistakeTracker;
+use levels::LEVELS;
 
 enum Action {
     Play,
@@ -23,6 +24,7 @@ fn main() {
         wins: 0,
         min_tries: None,
     };
+    let mut current_level: usize = 0;
 
     println!("Welcome to guess the number!");
     println!("================");
@@ -47,7 +49,7 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut stats);
+                play(&mut stats, current_level);
             }
             Action::Stats => {
                 print_stats(&stats);
@@ -58,14 +60,15 @@ fn main() {
             },
         };
         println!();
+        current_level += 1;
     }
 
 }
 
 // TODO: Print current number of tries
-fn play(stats: &mut Stats) {
+fn play(stats: &mut Stats, level: usize) {
     // TODO: try a smaller type for this
-    let secret_number = rand::thread_rng().gen_range(1..=100);
+    let secret_number = LEVELS[level].create_secret_number();
     let mut tries: u32 = 0;
     let mut mistake_tracker = MistakeTracker::new();
 
