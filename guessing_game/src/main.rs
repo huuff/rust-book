@@ -8,6 +8,7 @@ enum Action {
     Quit,
 }
 
+// TODO: Correctly use singular/plural
 fn main() {
     let mut wins: u32 = 0;
     println!("Welcome to guess the number!");
@@ -33,7 +34,9 @@ fn main() {
 
         match action {
             Action::Play => {
-                play();
+                play(&mut wins);
+                println!("You've won {wins} times");
+                println!();
             }
             Action::Quit => {
                 println!("Bye!");
@@ -47,7 +50,8 @@ fn main() {
 
 }
 
-fn play() {
+fn play(wins: &mut u32) {
+    // TODO: try a smaller type for this
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut tries: u32 = 0;
 
@@ -66,6 +70,7 @@ fn play() {
             }
         }
     }
+    *wins += 1;
 }
 
 fn get_input() -> String {
@@ -81,6 +86,7 @@ fn get_input() -> String {
     return input;
 }
 
+// TODO: Try a smaller type?
 fn get_guess() -> u32 {
     let mut guess: Option<u32> = None;
 
