@@ -96,14 +96,17 @@ fn get_grammatical_number(number: &u32) -> GrammaticalNumber {
 }
 
 fn get_input() -> String {
-    // TODO: Put prompt here
     // TODO: Put it outside, reuse reference
+    print!("> ");
+    let _ = io::stdout().flush();
     let mut input = String::new();
 
     io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line")
         ;
+
+    println!();
     
     return input;
 }
@@ -114,9 +117,6 @@ fn get_guess() -> u32 {
 
     while guess == None {
         println!("Please input your guess.");
-        print!("> ");
-        let _ = io::stdout().flush();
-
 
         match get_input().trim().parse() {
             Ok(num) => {
