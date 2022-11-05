@@ -29,6 +29,35 @@ struct Stats {
     min_tries: Option<u32>,
 }
 
+struct MistakeTracker {
+    last_mistake: Option<Ordering>,
+    in_a_row: u32,
+}
+
+impl MistakeTracker {
+    fn record(&mut self, mistake: Ordering) {
+        match self.last_mistake {
+            Some(last) => {
+                if last == mistake {
+                    self.in_a_row += 1;
+                } else {
+                    self.last_mistake = Some(mistake);
+                    self.in_a_row = 0;
+                }
+            },
+            None => {
+                self.last_mistake = Some(mistake);
+                self.in_a_row = 1;
+            }
+        }
+    }
+    fn is_distracted(&self) -> bool {
+        return self.in_a_row >= 3;
+    }
+}
+
+const DISTRACTED_MESSAGE: &str = "Are you paying attention?";
+
 fn main() {
     let mut stats: Stats = Stats {
         wins: 0,
@@ -88,6 +117,7 @@ fn main() {
 
 }
 
+// TODO: Print current number of tries
 fn play(
     stats: &mut Stats,
     words: &HashMap<String, NumberedWord>,
@@ -95,6 +125,10 @@ fn play(
     // TODO: try a smaller type for this
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut tries: u32 = 0;
+    let mut mistake_tracker = MistakeTracker {
+        last_mistake: None,
+        in_a_row: 0,
+    };
 
     loop {
         let guess = get_guess();
@@ -103,8 +137,22 @@ fn play(
         println!("You guess: {guess}");
 
         match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
+            Ordering::Less => {
+                mistake_tracker.record(Ordering::Less);
+                if !mistake_tracker.is_distracted() {
+                    println!("Too small!");
+                } else {
+                    println!("{DISTRACTED_MESSAGE}");
+                };
+            }
+            Ordering::Greater => {
+                mistake_tracker.record(Ordering::Greater);
+                if !mistake_tracker.is_distracted() {
+                    println!("Too big!");
+                } else {
+                    println!("{DISTRACTED_MESSAGE}");
+                };
+            }
             Ordering::Equal => {
                 println!(
                     "You won in {} {}!",
