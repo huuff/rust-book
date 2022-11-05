@@ -8,6 +8,11 @@ enum Action {
     Quit,
 }
 
+enum GrammaticalNumber {
+    Singular,
+    Plural,
+}
+
 // TODO: Correctly use singular/plural
 fn main() {
     let mut wins: u32 = 0;
@@ -35,7 +40,6 @@ fn main() {
         match action {
             Action::Play => {
                 play(&mut wins);
-                println!("You've won {wins} times");
             }
             Action::Stats => {
                 stats(&wins);
@@ -74,7 +78,18 @@ fn play(wins: &mut u32) {
 }
 
 fn stats(wins: &u32) {
-    println!("You've won {wins} times");
+    let word = match get_grammatical_number(wins) {
+        GrammaticalNumber::Singular => "time",
+        GrammaticalNumber::Plural => "times",
+    };
+    println!("You've won {wins} {word}");
+}
+
+fn get_grammatical_number(number: &u32) -> GrammaticalNumber {
+    return match number {
+        1 => GrammaticalNumber::Singular,
+        _ => GrammaticalNumber::Plural,
+    };
 }
 
 fn get_input() -> String {
