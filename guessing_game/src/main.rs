@@ -1,9 +1,11 @@
 mod words;
+mod mistakes;
 
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io::{self, Write};
 use words::WORDS;
+use mistakes::MistakeTracker;
 
 enum Action {
     Play,
@@ -16,34 +18,6 @@ struct Stats {
     min_tries: Option<u32>,
 }
 
-struct MistakeTracker {
-    last_mistake: Option<Ordering>,
-    in_a_row: u32,
-}
-
-impl MistakeTracker {
-    fn record(&mut self, mistake: Ordering) {
-        match self.last_mistake {
-            Some(last) => {
-                if last == mistake {
-                    self.in_a_row += 1;
-                } else {
-                    self.last_mistake = Some(mistake);
-                    self.in_a_row = 0;
-                }
-            },
-            None => {
-                self.last_mistake = Some(mistake);
-                self.in_a_row = 1;
-            }
-        }
-    }
-    fn is_distracted(&self) -> bool {
-        return self.in_a_row >= 3;
-    }
-}
-
-const DISTRACTED_MESSAGE: &str = "Are you paying attention?";
 
 fn main() {
     let mut stats: Stats = Stats {
@@ -94,10 +68,7 @@ fn play(stats: &mut Stats) {
     // TODO: try a smaller type for this
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut tries: u32 = 0;
-    let mut mistake_tracker = MistakeTracker {
-        last_mistake: None,
-        in_a_row: 0,
-    };
+    let mut mistake_tracker = MistakeTracker::new();
 
     loop {
         let guess = get_guess();
@@ -108,19 +79,11 @@ fn play(stats: &mut Stats) {
         match guess.cmp(&secret_number) {
             Ordering::Less => {
                 mistake_tracker.record(Ordering::Less);
-                if !mistake_tracker.is_distracted() {
-                    println!("Too small!");
-                } else {
-                    println!("{DISTRACTED_MESSAGE}");
-                };
+                println!("Too small!");
             }
             Ordering::Greater => {
                 mistake_tracker.record(Ordering::Greater);
-                if !mistake_tracker.is_distracted() {
-                    println!("Too big!");
-                } else {
-                    println!("{DISTRACTED_MESSAGE}");
-                };
+                println!("Too big!");
             }
             Ordering::Equal => {
                 println!(
