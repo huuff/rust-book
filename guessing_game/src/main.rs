@@ -1,12 +1,14 @@
 mod words;
 mod mistakes;
 mod levels;
+mod stats;
 
 use std::cmp::Ordering;
 use std::io::{self, Write};
 use words::WORDS;
 use mistakes::MistakeTracker;
 use levels::{LEVELS, Level};
+use stats::Stats;
 
 enum Action {
     Play,
@@ -14,16 +16,8 @@ enum Action {
     Quit,
 }
 
-struct Stats {
-    wins: u32,
-    min_tries: Option<u32>,
-}
-
 fn main() {
-    let mut stats: Stats = Stats {
-        wins: 0,
-        min_tries: None,
-    };
+    let mut stats: Stats = Stats::new();
     let mut current_level: usize = 0;
 
     println!("Welcome to guess the number!");
@@ -52,7 +46,7 @@ fn main() {
                 play(&mut stats, &mut current_level);
             }
             Action::Stats => {
-                print_stats(&stats);
+                stats.print();
             },
             Action::Quit => {
                 println!("Bye!");
@@ -101,35 +95,9 @@ fn play(stats: &mut Stats, level: &mut usize) {
             }
         }
     }
-    stats.wins += 1;
     *level += 1;
-    match stats.min_tries {
-        Some(min) => {
-            if tries < min {
-                stats.min_tries = Some(tries);
-            }
-        },
-        None => {
-            stats.min_tries = Some(tries);
-        }
-    };
-}
-
-fn print_stats(stats: &Stats) {
-    println!(
-        "You've won {} {}",
-        stats.wins,
-        WORDS["win"].get_correct_form(stats.wins)
-    );
-    if let Some(tries) = stats.min_tries {
-        println!(
-            "Your best game ended in {} {}",
-            tries,
-            WORDS["try"].get_correct_form(tries)
-        );
-
-    }
-
+    
+    stats.record(tries);
 }
 
 fn get_input() -> String {
