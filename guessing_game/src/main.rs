@@ -1,49 +1,14 @@
+mod words;
+
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io::{self, Write};
-use std::collections::HashMap;
-use lazy_static::lazy_static;
-
-lazy_static! {
-    static ref WORDS: HashMap<&'static str, NumberedWord> = {
-        let mut map = HashMap::new();
-        map.insert(
-            "try",
-            NumberedWord {
-                singular: "try".to_string(),
-                plural: "tries".to_string(),
-            }
-        );
-        map.insert(
-            "win",
-            NumberedWord {
-                singular: "win".to_string(),
-                plural: "wins".to_string(),
-            }
-        );
-        map
-    }; 
-}
+use words::words::WORDS;
 
 enum Action {
     Play,
     Stats,
     Quit,
-}
-
-struct NumberedWord {
-    singular: String,
-    plural: String,
-}
-
-impl NumberedWord {
-    fn get_correct_form(&self, number: u32) -> &str {
-        return if number == 1 { 
-            self.singular.as_str()
-        } else {
-            self.plural.as_str()
-        }
-    }
 }
 
 struct Stats {
