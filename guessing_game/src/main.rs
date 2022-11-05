@@ -13,7 +13,7 @@ fn main() {
 
         loop {
             let guess = get_guess();
-            tries = tries + 1;
+            tries += 1;
 
             println!("You guess: {guess}");
 
@@ -26,7 +26,7 @@ fn main() {
                 }
             }
         }
-        wins = wins + 1;
+        wins += 1;
         println!("You've won {wins} times.");
         println!();
     }
