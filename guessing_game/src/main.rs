@@ -2,6 +2,28 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::io::{self, Write};
 use std::collections::HashMap;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref WORDS: HashMap<&'static str, NumberedWord> = {
+        let mut map = HashMap::new();
+        map.insert(
+            "try",
+            NumberedWord {
+                singular: "try".to_string(),
+                plural: "tries".to_string(),
+            }
+        );
+        map.insert(
+            "win",
+            NumberedWord {
+                singular: "win".to_string(),
+                plural: "wins".to_string(),
+            }
+        );
+        map
+    }; 
+}
 
 enum Action {
     Play,
@@ -63,21 +85,6 @@ fn main() {
         wins: 0,
         min_tries: None,
     };
-    let mut words: HashMap<String, NumberedWord> = HashMap::new();
-    words.insert(
-        "try".to_string(),
-        NumberedWord {
-            singular: "try".to_string(),
-            plural: "tries".to_string(),
-        }
-    );
-    words.insert(
-        "win".to_string(),
-        NumberedWord {
-            singular: "win".to_string(),
-            plural: "wins".to_string(),
-        }
-    );
 
     println!("Welcome to guess the number!");
     println!("================");
@@ -102,10 +109,10 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut stats, &words);
+                play(&mut stats);
             }
             Action::Stats => {
-                print_stats(&stats, &words);
+                print_stats(&stats);
             },
             Action::Quit => {
                 println!("Bye!");
@@ -118,10 +125,7 @@ fn main() {
 }
 
 // TODO: Print current number of tries
-fn play(
-    stats: &mut Stats,
-    words: &HashMap<String, NumberedWord>,
-    ) {
+fn play(stats: &mut Stats) {
     // TODO: try a smaller type for this
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut tries: u32 = 0;
@@ -157,7 +161,7 @@ fn play(
                 println!(
                     "You won in {} {}!",
                     tries,
-                    words.get("try")
+                    WORDS.get("try")
                          .unwrap()
                          .get_correct_form(tries)
                 );
@@ -178,14 +182,11 @@ fn play(
     };
 }
 
-fn print_stats(
-    stats: &Stats,
-    words: &HashMap<String, NumberedWord>,
-    ) {
+fn print_stats(stats: &Stats) {
     println!(
         "You've won {} {}",
         stats.wins,
-        words.get("win")
+        WORDS.get("win")
              .unwrap()
              .get_correct_form(stats.wins)
     );
@@ -193,7 +194,7 @@ fn print_stats(
         println!(
             "Your best game ended in {} {}",
             tries,
-            words.get("try")
+            WORDS.get("try")
                  .unwrap()
                  .get_correct_form(tries)
         );
