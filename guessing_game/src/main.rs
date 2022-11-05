@@ -25,12 +25,12 @@ fn main() {
         println!("* stats");
         println!("* quit");
 
-        let input = get_input();
-        // TODO: Try to remove the \n's with `trim()`
-        let action: Action = match input.as_str() {
-            "play\n" =>  Action::Play,
-            "stats\n" => Action::Stats,
-            "quit\n" => Action::Quit,
+        let untrimmed_input = get_input();
+        let input = untrimmed_input.trim();
+        let action: Action = match input {
+            "play" =>  Action::Play,
+            "stats" => Action::Stats,
+            "quit" => Action::Quit,
             _ => {
                 println!("Sorry, I don't know what {input} means.");
                 continue;
