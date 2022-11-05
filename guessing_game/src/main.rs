@@ -13,7 +13,6 @@ enum GrammaticalNumber {
     Plural,
 }
 
-// TODO: Correctly use singular/plural
 fn main() {
     let mut wins: u32 = 0;
     println!("Welcome to guess the number!");
@@ -69,7 +68,11 @@ fn play(wins: &mut u32) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
-                println!("You won in {tries} tries!");
+                let word = match get_grammatical_number(&tries) {
+                    GrammaticalNumber::Singular => "try",
+                    GrammaticalNumber::Plural => "tries",
+                };
+                println!("You won in {tries} {word}!");
                 break;
             }
         }
