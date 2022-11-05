@@ -106,10 +106,13 @@ fn play(
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
-                let word = words.get("try")
-                                .unwrap()
-                                .get_correct_form(tries);
-                println!("You won in {tries} {word}!");
+                println!(
+                    "You won in {} {}!",
+                    tries,
+                    words.get("try")
+                         .unwrap()
+                         .get_correct_form(tries)
+                );
                 break;
             }
         }
