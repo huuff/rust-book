@@ -16,19 +16,12 @@ fn main() {
             print!("> ");
             let _ = io::stdout().flush();
 
-            let mut guess = String::new();
-
-            io::stdin()
-                .read_line(&mut guess)
-                .expect("Failed to read line")
-                ;
-
-            let guess: u32 = match guess.trim().parse() {
-                Ok(num) => num,
-                Err(_) => {
-                    println!("Not a valid number, try again");
-                    continue;
-                },
+            let guess = match get_guess() {
+              Ok(num) => num,
+              Err(_) => {
+                println!("Not a valid number, try again.");
+                continue;
+              }
             };
             tries = tries + 1;
 
@@ -47,5 +40,15 @@ fn main() {
         println!("You've won {wins} times.");
         println!();
     }
+}
 
+fn get_guess() -> Result<u32, std::num::ParseIntError> {
+    let mut guess = String::new();
+
+    io::stdin()
+        .read_line(&mut guess)
+        .expect("Failed to read line")
+        ;
+
+    return guess.trim().parse();
 }
