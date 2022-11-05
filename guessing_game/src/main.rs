@@ -15,6 +15,7 @@ enum GrammaticalNumber {
 
 fn main() {
     let mut wins: u32 = 0;
+    let mut min_tries: Option<u32> = None;
     println!("Welcome to guess the number!");
     println!("================");
 
@@ -38,10 +39,10 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut wins);
+                play(&mut wins, &mut min_tries);
             }
             Action::Stats => {
-                stats(&wins);
+                stats(&wins, &min_tries);
             },
             Action::Quit => {
                 println!("Bye!");
@@ -53,7 +54,7 @@ fn main() {
 
 }
 
-fn play(wins: &mut u32) {
+fn play(wins: &mut u32, min_tries: &mut Option<u32>) {
     // TODO: try a smaller type for this
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut tries: u32 = 0;
@@ -78,14 +79,34 @@ fn play(wins: &mut u32) {
         }
     }
     *wins += 1;
+    match min_tries {
+        Some(min) => {
+            if tries < *min {
+                *min_tries = Some(tries);
+            }
+        },
+        None => {
+            *min_tries = Some(tries);
+        }
+    };
 }
 
-fn stats(wins: &u32) {
-    let word = match get_grammatical_number(wins) {
+fn stats(wins: &u32, min_tries: &Option<u32>) {
+    let wins_word = match get_grammatical_number(wins) {
         GrammaticalNumber::Singular => "time",
         GrammaticalNumber::Plural => "times",
     };
-    println!("You've won {wins} {word}");
+    println!("You've won {wins} {wins_word}");
+    if let Some(tries) = min_tries {
+        // TODO: I have to somehow merge this with the above use
+        let min_tries_word = match get_grammatical_number(tries) {
+            GrammaticalNumber::Singular => "try",
+            GrammaticalNumber::Plural => "tries",
+        };
+        println!("Your best game ended in {tries} {min_tries_word}")
+
+    }
+
 }
 
 fn get_grammatical_number(number: &u32) -> GrammaticalNumber {
