@@ -36,16 +36,16 @@ fn main() {
             Action::Play => {
                 play(&mut wins);
                 println!("You've won {wins} times");
-                println!();
             }
+            Action::Stats => {
+                stats(&wins);
+            },
             Action::Quit => {
                 println!("Bye!");
                 break;
             },
-            _ => {
-                panic!();
-            },
         };
+        println!();
     }
 
 }
@@ -71,6 +71,10 @@ fn play(wins: &mut u32) {
         }
     }
     *wins += 1;
+}
+
+fn stats(wins: &u32) {
+    println!("You've won {wins} times");
 }
 
 fn get_input() -> String {
