@@ -18,7 +18,6 @@ struct Stats {
     min_tries: Option<u32>,
 }
 
-
 fn main() {
     let mut stats: Stats = Stats {
         wins: 0,
@@ -78,12 +77,12 @@ fn play(stats: &mut Stats) {
 
         match guess.cmp(&secret_number) {
             Ordering::Less => {
-                mistake_tracker.record(Ordering::Less);
                 println!("Too small!");
+                mistake_tracker.record(Ordering::Less);
             }
             Ordering::Greater => {
-                mistake_tracker.record(Ordering::Greater);
                 println!("Too big!");
+                mistake_tracker.record(Ordering::Greater);
             }
             Ordering::Equal => {
                 println!(
