@@ -1,6 +1,7 @@
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io::{self, Write};
+use std::collections::HashMap;
 
 enum Action {
     Play,
@@ -8,14 +9,41 @@ enum Action {
     Quit,
 }
 
-enum GrammaticalNumber {
-    Singular,
-    Plural,
+struct NumberedWord {
+    singular: String,
+    plural: String,
+}
+
+impl NumberedWord {
+    fn get_correct_form(&self, number: u32) -> &str {
+        return if number == 1 { 
+            self.singular.as_str()
+        } else {
+            self.plural.as_str()
+        }
+    }
 }
 
 fn main() {
+    // TODO: A Stats struct
     let mut wins: u32 = 0;
     let mut min_tries: Option<u32> = None;
+    let mut words: HashMap<String, NumberedWord> = HashMap::new();
+    words.insert(
+        "try".to_string(),
+        NumberedWord {
+            singular: "try".to_string(),
+            plural: "tries".to_string(),
+        }
+    );
+    words.insert(
+        "win".to_string(),
+        NumberedWord {
+            singular: "win".to_string(),
+            plural: "wins".to_string(),
+        }
+    );
+
     println!("Welcome to guess the number!");
     println!("================");
 
@@ -39,10 +67,10 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut wins, &mut min_tries);
+                play(&mut wins, &mut min_tries, &words);
             }
             Action::Stats => {
-                stats(&wins, &min_tries);
+                stats(&wins, &min_tries, &words);
             },
             Action::Quit => {
                 println!("Bye!");
@@ -54,7 +82,11 @@ fn main() {
 
 }
 
-fn play(wins: &mut u32, min_tries: &mut Option<u32>) {
+fn play(
+    wins: &mut u32,
+    min_tries: &mut Option<u32>,
+    words: &HashMap<String, NumberedWord>,
+    ) {
     // TODO: try a smaller type for this
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut tries: u32 = 0;
@@ -69,10 +101,9 @@ fn play(wins: &mut u32, min_tries: &mut Option<u32>) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
-                let word = match get_grammatical_number(&tries) {
-                    GrammaticalNumber::Singular => "try",
-                    GrammaticalNumber::Plural => "tries",
-                };
+                let word = words.get("try")
+                                .unwrap()
+                                .get_correct_form(tries);
                 println!("You won in {tries} {word}!");
                 break;
             }
@@ -91,29 +122,23 @@ fn play(wins: &mut u32, min_tries: &mut Option<u32>) {
     };
 }
 
-fn stats(wins: &u32, min_tries: &Option<u32>) {
-    let wins_word = match get_grammatical_number(wins) {
-        GrammaticalNumber::Singular => "time",
-        GrammaticalNumber::Plural => "times",
-    };
+fn stats(
+    wins: &u32,
+    min_tries: &Option<u32>,
+    words: &HashMap<String, NumberedWord>,
+    ) {
+    let wins_word = words.get("win")
+                         .unwrap()
+                         .get_correct_form(*wins);
     println!("You've won {wins} {wins_word}");
     if let Some(tries) = min_tries {
-        // TODO: I have to somehow merge this with the above use
-        let min_tries_word = match get_grammatical_number(tries) {
-            GrammaticalNumber::Singular => "try",
-            GrammaticalNumber::Plural => "tries",
-        };
+        let min_tries_word = words.get("try")
+                                  .unwrap()
+                                  .get_correct_form(*tries);
         println!("Your best game ended in {tries} {min_tries_word}")
 
     }
 
-}
-
-fn get_grammatical_number(number: &u32) -> GrammaticalNumber {
-    return match number {
-        1 => GrammaticalNumber::Singular,
-        _ => GrammaticalNumber::Plural,
-    };
 }
 
 fn get_input() -> String {
