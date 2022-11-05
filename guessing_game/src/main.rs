@@ -3,7 +3,7 @@ mod words;
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io::{self, Write};
-use words::words::WORDS;
+use words::WORDS;
 
 enum Action {
     Play,
