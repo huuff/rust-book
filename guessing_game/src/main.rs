@@ -12,16 +12,12 @@ fn main() {
         let mut tries: u32 = 0;
 
         loop {
-            println!("Please input your guess.");
-            print!("> ");
-            let _ = io::stdout().flush();
-
             let guess = match get_guess() {
-              Ok(num) => num,
-              Err(_) => {
-                println!("Not a valid number, try again.");
-                continue;
-              }
+                Ok(num) => num,
+                Err(_) => {
+                    println!("Not a valid number, try again.");
+                    continue;
+                }
             };
             tries = tries + 1;
 
@@ -43,6 +39,10 @@ fn main() {
 }
 
 fn get_guess() -> Result<u32, std::num::ParseIntError> {
+    println!("Please input your guess.");
+    print!("> ");
+    let _ = io::stdout().flush();
+
     let mut guess = String::new();
 
     io::stdin()
