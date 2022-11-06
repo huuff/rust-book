@@ -1,4 +1,5 @@
 use crate::GameResult;
+use crate::words::WORDS;
 
 pub struct Stats {
     pub level_results: Vec<u32>,
@@ -25,6 +26,18 @@ impl Stats {
     }
 
     pub fn print(&self) {
-        println!("You're currently on level {}", self.current_level());
+        println!("You're currently on level {}", self.current_level() + 1);
+        if self.current_level() > 0 {
+            println!("Previous results:");
+            println!("----------------");
+            for (i, tries) in self.level_results.iter().enumerate() {
+                println!(
+                    "Level {}: {} {}",
+                    i+1,
+                    tries,
+                    WORDS["try"].get_correct_form(*tries),
+                );
+            }
+        }
     }
 }
