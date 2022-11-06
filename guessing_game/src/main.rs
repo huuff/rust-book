@@ -58,7 +58,6 @@ fn main() {
 
 }
 
-// TODO: Print current number of tries
 fn play(stats: &mut Stats, level: &mut usize) {
     println!("LEVEL {}", *level + 1);
     println!("---------");
@@ -95,7 +94,7 @@ fn play(stats: &mut Stats, level: &mut usize) {
                 break;
             }
         }
-        println!("{} tries remaining.", max_tries - tries);
+        println!("You used {}/{} tries.", tries, max_tries);
     }
     *level += 1;
     
