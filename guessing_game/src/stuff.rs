@@ -4,6 +4,7 @@ use std::collections::HashMap;
 pub enum PowerUp {
     ExtraTry,
     Bounds,
+    Hint,
 }
 
 pub struct Inventory {
@@ -53,6 +54,10 @@ impl Inventory {
 
             if self.has(PowerUp::Bounds) {
                 println!("Bounds: {}", self.power_ups[&PowerUp::Bounds]);
+            }
+
+            if self.has(PowerUp::Hint) {
+                println!("Hint: {}", self.power_ups[&PowerUp::Hint]);
             }
         }
     }

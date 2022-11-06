@@ -13,7 +13,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.1,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.05,
+            },
         ]
     },
     Level {
@@ -27,7 +31,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.15,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.06,
+            },
         ]
     },
     Level {
@@ -42,6 +50,10 @@ pub static LEVELS: [Level; 10] = [
                 power_up: PowerUp::Bounds,
                 chance: 0.2,
             },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.07,
+            },
         ]
     },
     Level {
@@ -55,7 +67,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.22,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.08,
+            },
         ]
     },
     Level {
@@ -69,7 +85,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.24,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.09,
+            },
         ]
     },
     Level {
@@ -83,7 +103,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.26,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.1,
+            },
         ]
     },
     Level { 
@@ -97,7 +121,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.28,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.11,
+            },
         ]
     },
     Level { 
@@ -111,7 +139,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.3,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.12,
+            },
         ]
     },
     Level {
@@ -125,7 +157,11 @@ pub static LEVELS: [Level; 10] = [
             PossibleDrop {
                 power_up: PowerUp::Bounds,
                 chance: 0.32,
-            }
+            },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.13,
+            },
         ]
     },
     Level {
@@ -140,6 +176,10 @@ pub static LEVELS: [Level; 10] = [
                 power_up: PowerUp::Bounds,
                 chance: 0.34,
             },
+            PossibleDrop {
+                power_up: PowerUp::Hint,
+                chance: 0.14,
+            },
         ]
     }
 ];
@@ -153,7 +193,7 @@ pub struct Level {
     pub max_number: u32,
     pub max_tries: u32,
     // The size of the possible_drops array is the number of existent drops
-    pub possible_drops: [PossibleDrop; 2],
+    pub possible_drops: [PossibleDrop; 3],
 }
 
 impl Level {
@@ -172,7 +212,10 @@ impl Level {
                     },
                     PowerUp::Bounds => {
                         println!("You found a Bounds power-up!");
-                    }
+                    },
+                    PowerUp::Hint => {
+                        println!("You found a Hint power-up!");
+                    },
                 };
                 return Some(possible_drop.power_up.clone());
             }

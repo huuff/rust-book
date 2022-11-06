@@ -63,7 +63,7 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                 println!("These are your options:");
                 println!("* Input an integer to make a guess");
                 println!("* Input 'inventory' to check your inventory");
-                println!("* Input 'powerup _name_' to use a power-up (where _name_ may be one of Bounds, ExtraTry )");
+                println!("* Input 'powerup _name_' to use a power-up (where _name_ may be one of Bounds, ExtraTry, Hint )");
                 println!("* Input 'quit' to exit this level");
                 println!("* Input 'help' to display this help");
             },
@@ -86,7 +86,16 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                         } else {
                             println!("You don't have a Bounds!");
                         }
-                    }
+                    },
+                    PowerUp::Hint => {
+                        if inventory.has(PowerUp::Hint) {
+                            println!("You used a Hint!");
+                            println!("This functionality is not yet implemented (yet you consumed the hint anyway)");
+                            inventory.remove(PowerUp::Hint);
+                        } else {
+                            println!("You don't have a Hint!");
+                        }
+                    },
                 }
             },
         }
@@ -134,6 +143,9 @@ fn get_game_input() -> GameAction {
                            }, 
                            "bounds" => {
                                 action = Some(GameAction::PowerUp(PowerUp::Bounds));
+                           },
+                           "hint" => {
+                                action = Some(GameAction::PowerUp(PowerUp::Hint));
                            },
                            _ => {
                                 println!("No power up with name {} exists", power_up);
