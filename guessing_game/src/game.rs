@@ -1,7 +1,8 @@
+use rand::Rng;
 use std::cmp::Ordering;
 use crate::input::get_input;
 use crate::mistakes::{MistakeTracker, GuessMistake};
-use crate::levels::{LEVELS};
+use crate::levels::LEVELS;
 use crate::stuff::{Inventory, PowerUp};
 use regex::Regex;
 
@@ -81,7 +82,7 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                     PowerUp::Bounds => {
                         if inventory.has(PowerUp::Bounds) {
                             println!("You used a Bounds!");
-                            let bounds = mistake_tracker.create_bounds();
+                            let bounds = mistake_tracker.create_bounds(&level);
                             bounds.print();
                             inventory.remove(PowerUp::Bounds);
                         } else {
@@ -91,7 +92,29 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                     PowerUp::Hint => {
                         if inventory.has(PowerUp::Hint) {
                             println!("You used a Hint!");
-                            println!("This functionality is not yet implemented (yet you consumed the hint anyway)");
+
+                            let bounds = mistake_tracker.create_bounds(&level);
+                            let mut rng = rand::thread_rng();
+                            let mut hint = secret_number;
+
+                            while hint == secret_number {
+                               hint = rng.gen_range(bounds.lower..=bounds.upper); 
+                            }
+                            let comparison_to_secret = hint.cmp(&secret_number);
+
+                            match comparison_to_secret {
+                                Ordering::Less => {
+                                    println!("The answer is greater than {hint}");
+                                },
+                                Ordering::Greater => {
+                                    println!("The answer is less than {hint}");
+                                },
+                                _ => {
+                                    panic!("A hint should never be equal to the secret!");
+                                },
+                            }
+
+                            mistake_tracker.record(GuessMistake::new(hint, comparison_to_secret));
                             inventory.remove(PowerUp::Hint);
                         } else {
                             println!("You don't have a Hint!");

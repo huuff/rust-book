@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use crate::bounds::Bounds;
+use crate::levels::Level;
 
 const DISTRACTED_MESSAGE: &str = "Are you paying attention?";
 
@@ -29,7 +30,7 @@ impl MistakeTracker {
         return self.mistakes.last();
     }
 
-    pub fn create_bounds(&self) -> Bounds {
+    pub fn create_bounds(&self, level: &Level) -> Bounds {
         let lower_bound = self.mistakes
             .iter()
             .filter(|it| it.direction == Ordering::Less)
@@ -44,8 +45,8 @@ impl MistakeTracker {
             ;
 
         return Bounds {
-            lower: lower_bound,
-            upper: upper_bound,
+            lower: lower_bound.unwrap_or(1),
+            upper: upper_bound.unwrap_or(level.max_number),
         };
     }
 
