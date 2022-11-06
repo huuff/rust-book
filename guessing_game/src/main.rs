@@ -47,7 +47,7 @@ fn main() {
 
         match action {
             Action::Play => {
-                let result = play(stats.level);
+                let result = play(stats.current_level());
                 stats.record(result);
             }
             Action::Stats => {
