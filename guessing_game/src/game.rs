@@ -8,6 +8,11 @@ pub enum GameResult {
     Loss,
 }
 
+enum GameAction {
+    Guess(u32),
+    Quit,
+}
+
 pub fn play(level: usize) -> GameResult {
     println!("LEVEL {}", level + 1);
     println!("---------");
@@ -21,18 +26,27 @@ pub fn play(level: usize) -> GameResult {
     let mut mistake_tracker = MistakeTracker::new();
 
     while tries < *max_tries {
-        let guess = get_guess();
-        tries += 1;
+        let action = get_game_input();
+    
+        match action {
+            GameAction::Guess(guess) => {
+                tries += 1;
 
-        println!("Your guess: {guess}");
-        
-        let comparison_to_secret = guess.cmp(&secret_number);
-        if comparison_to_secret == Ordering::Equal {
-            break;
-        } else {
-            mistake_tracker.record(GuessMistake::new(guess, comparison_to_secret));
+                println!("Your guess: {guess}");
+                
+                let comparison_to_secret = guess.cmp(&secret_number);
+                if comparison_to_secret == Ordering::Equal {
+                    break;
+                } else {
+                    mistake_tracker.record(GuessMistake::new(guess, comparison_to_secret));
+                }
+                println!("You've used {}/{} tries.", tries, max_tries);
+            },
+            GameAction::Quit => {
+                println!("Okay!");
+                return GameResult::Loss;
+            },
         }
-        println!("You've used {}/{} tries.", tries, max_tries);
     }
 
     return if tries < *max_tries { 
@@ -42,23 +56,26 @@ pub fn play(level: usize) -> GameResult {
     };
 }
 
-// TODO: Try a smaller type?
-fn get_guess() -> u32 {
-    let mut guess: Option<u32> = None;
+fn get_game_input() -> GameAction {
+    let mut action: Option<GameAction> = None;
 
-    while guess == None {
-        println!("Please input your guess.");
-
-        match get_input().trim().parse() {
-            Ok(num) => {
-                guess = Some(num);
-            },
-            Err(_) => {
-                println!("Not a valid number, try again.");
-                continue;
+    while action.is_none() {
+        println!("Please input a guess or 'help' to see available actions");
+        let untrimmed_input = get_input();
+        let input = untrimmed_input.trim();
+        if let Ok(guess) = input.parse::<u32>() {
+            action = Some(GameAction::Guess(guess));
+        } else {
+            match input {
+                "quit" => {
+                    action = Some(GameAction::Quit);  
+                },
+                _ => {
+                    println!("Sorry, I don't know what {} means", input);
+                },
             }
-        };
-    };
+        }
+    }
 
-    guess.unwrap()
+    action.unwrap()
 }
