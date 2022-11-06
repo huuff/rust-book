@@ -16,12 +16,27 @@ impl Inventory {
         }
     }
 
+    pub fn has(&self, power_up: PowerUp) -> bool {
+        if let Some(amount) = self.power_ups.get(&power_up) {
+            return *amount > 0;
+        } else {
+            return false;
+        }
+    }
+
     pub fn add(&mut self, power_up: PowerUp) {
         if self.power_ups.contains_key(&power_up) {
             let previous_amount = self.power_ups[&power_up];
             self.power_ups.insert(power_up, previous_amount + 1);
         } else {
             self.power_ups.insert(power_up, 1);
+        }
+    }
+
+    pub fn remove(&mut self, power_up: PowerUp) {
+        if self.power_ups.contains_key(&power_up) {
+            let previous_amount = self.power_ups[&power_up];
+            self.power_ups.insert(power_up, previous_amount - 1);
         }
     }
 

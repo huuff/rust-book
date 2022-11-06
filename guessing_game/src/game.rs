@@ -3,6 +3,7 @@ use crate::input::get_input;
 use crate::mistakes::{MistakeTracker, GuessMistake};
 use crate::levels::{LEVELS};
 use crate::stuff::{Inventory, PowerUp};
+use regex::Regex;
 
 pub enum GameResult {
     Win(u32),
@@ -14,6 +15,7 @@ enum GameAction {
     Quit,
     Help,
     Inventory,
+    PowerUp(PowerUp),
 }
 
 pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
@@ -30,13 +32,13 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
 
     while tries < level.max_tries {
         let action = get_game_input();
-    
+
         match action {
             GameAction::Guess(guess) => {
                 tries += 1;
 
                 println!("Your guess: {guess}");
-                
+
                 let comparison_to_secret = guess.cmp(&secret_number);
                 if comparison_to_secret == Ordering::Equal {
                     break;
@@ -63,6 +65,19 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                 println!("* Input 'inventory' to check your inventory");
                 println!("* Input 'quit' to exit this level");
                 println!("* Input 'help' to display this help");
+            },
+            GameAction::PowerUp(power_up) => {
+                match power_up {
+                    PowerUp::ExtraTry => {
+                        if inventory.has(PowerUp::ExtraTry) {
+                            println!("You used an ExtraTry!");
+                            tries -= 1;
+                            inventory.remove(PowerUp::ExtraTry);
+                        } else {
+                            println!("You don't have an ExtraTry!");
+                        }
+                    },
+                }
             },
         }
         println!();
@@ -96,7 +111,24 @@ fn get_game_input() -> GameAction {
                     action = Some(GameAction::Inventory);
                 },
                 _ => {
-                    println!("Sorry, I don't know what {} means", input);
+                    let power_up_regex = Regex::new(r"powerup (\w+)").unwrap();
+                    if power_up_regex.is_match(input) {
+                        let power_up = power_up_regex.captures(input)
+                                                     .unwrap()
+                                                     .get(1)
+                                                     .unwrap()
+                                                     .as_str(); 
+                        match power_up {
+                           "extratry" => {
+                                action = Some(GameAction::PowerUp(PowerUp::ExtraTry));
+                           }, 
+                           _ => {
+                                println!("No power up with name {} exists", power_up);
+                           }
+                        }
+                    } else {
+                        println!("Sorry, I don't know what {} means", input);
+                    }
                 },
             }
         }
