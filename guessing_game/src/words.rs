@@ -10,14 +10,7 @@ lazy_static! {
                 singular: "try".to_string(),
                 plural: "tries".to_string(),
             }
-            );
-        map.insert(
-            "win",
-            NumberedWord {
-                singular: "win".to_string(),
-                plural: "wins".to_string(),
-            }
-            );
+        );
         map
     }; 
 }

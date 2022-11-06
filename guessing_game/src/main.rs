@@ -16,9 +16,13 @@ enum Action {
     Quit,
 }
 
+pub enum GameResult {
+    Win(u32),
+    Loss,
+}
+
 fn main() {
     let mut stats: Stats = Stats::new();
-    let mut current_level: usize = 0;
 
     println!("Welcome to guess the number!");
     println!("================");
@@ -43,7 +47,8 @@ fn main() {
 
         match action {
             Action::Play => {
-                play(&mut stats, &mut current_level);
+                let result = play(stats.level);
+                stats.record(result);
             }
             Action::Stats => {
                 stats.print();
@@ -58,19 +63,19 @@ fn main() {
 
 }
 
-fn play(stats: &mut Stats, level: &mut usize) {
-    println!("LEVEL {}", *level + 1);
+fn play(level: usize) -> GameResult {
+    println!("LEVEL {}", level + 1);
     println!("---------");
-    let Level { max_number, max_tries } = &LEVELS[*level];
+    let Level { max_number, max_tries } = &LEVELS[level];
     println!("Find the secret number between 1 and {}", max_number);
     println!("You've got {max_tries} tries");
 
     // TODO: try a smaller type for this
-    let secret_number = LEVELS[*level].create_secret_number();
+    let secret_number = LEVELS[level].create_secret_number();
     let mut tries: u32 = 0;
     let mut mistake_tracker = MistakeTracker::new();
 
-    loop {
+    while tries < *max_tries {
         let guess = get_guess();
         tries += 1;
 
@@ -94,11 +99,14 @@ fn play(stats: &mut Stats, level: &mut usize) {
                 break;
             }
         }
-        println!("You used {}/{} tries.", tries, max_tries);
+        println!("You've used {}/{} tries.", tries, max_tries);
     }
-    *level += 1;
-    
-    stats.record(tries);
+
+    return if tries < *max_tries { 
+        GameResult::Win(tries)
+    } else {
+        GameResult::Loss
+    };
 }
 
 fn get_input() -> String {
