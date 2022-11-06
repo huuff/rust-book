@@ -21,6 +21,6 @@ impl Stats {
     }
 
     pub fn print(&self) {
-        println!("You're currently on level {}", self.level);
+        println!("You're currently on level {}", self.level + 1);
     }
 }
