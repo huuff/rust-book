@@ -5,7 +5,6 @@ mod stats;
 
 use std::cmp::Ordering;
 use std::io::{self, Write};
-use words::WORDS;
 use mistakes::MistakeTracker;
 use levels::{LEVELS, Level};
 use stats::Stats;
@@ -91,11 +90,6 @@ fn play(level: usize) -> GameResult {
                 mistake_tracker.record(Ordering::Greater);
             }
             Ordering::Equal => {
-                println!(
-                    "You won in {} {}!",
-                    tries,
-                    WORDS["try"].get_correct_form(tries)
-                );
                 break;
             }
         }

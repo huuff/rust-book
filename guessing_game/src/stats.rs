@@ -16,8 +16,15 @@ impl Stats {
         match result {
             GameResult::Win(tries) => {
                 self.level_results.push(tries);
+                println!(
+                    "You won in {} {}!",
+                    tries,
+                    WORDS["try"].get_correct_form(tries)
+                );
             },
-            GameResult::Loss => (),
+            GameResult::Loss => {
+                println!("You lost!");
+            },
         }
     }
 
