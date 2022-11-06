@@ -2,40 +2,48 @@ use std::cmp::Ordering;
 
 const DISTRACTED_MESSAGE: &str = "Are you paying attention?";
 
+pub struct GuessMistake {
+    guess: u32,
+    direction: Ordering,
+}
+
+impl GuessMistake {
+    pub fn new(guess: u32, direction: Ordering) -> GuessMistake {
+        GuessMistake { guess, direction }
+    }
+}
+
 pub struct MistakeTracker {
-    last_mistake: Option<Ordering>,
-    in_a_row: u32,
+    last_mistake: Option<GuessMistake>,
 }
 
 impl MistakeTracker {
     pub fn new() -> MistakeTracker {
         MistakeTracker {
             last_mistake: None,
-            in_a_row: 0,
         }
     }
 
-    pub fn record(&mut self, mistake: Ordering) {
-        match self.last_mistake {
-            Some(last) => {
-                if last == mistake {
-                    self.in_a_row += 1;
-                } else {
-                    self.last_mistake = Some(mistake);
-                    self.in_a_row = 0;
-                }
+    pub fn record(&mut self, new_mistake: GuessMistake) {
+        match new_mistake.direction {
+            Ordering::Less => {
+                println!("Too small!");
             },
-            None => {
-                self.last_mistake = Some(mistake);
-                self.in_a_row = 1;
+            Ordering::Greater => {
+                println!("Too big!");
+            },
+            Ordering::Equal => {
+                panic!("Can't have a mistake that's a correct answer");
+            },
+        }
+
+        if let Some(last_mistake) = &self.last_mistake {
+            let mistake_comparison = new_mistake.guess.cmp(&last_mistake.guess);
+            if mistake_comparison == last_mistake.direction {
+                println!("{DISTRACTED_MESSAGE}");
             }
         }
-        if self.is_distracted() {
-            println!("{DISTRACTED_MESSAGE}");
-        }
-    }
-    fn is_distracted(&self) -> bool {
-        return self.in_a_row >= 3;
+        self.last_mistake = Some(new_mistake);
     }
 }
 

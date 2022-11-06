@@ -5,7 +5,7 @@ mod stats;
 
 use std::cmp::Ordering;
 use std::io::{self, Write};
-use mistakes::MistakeTracker;
+use mistakes::{MistakeTracker, GuessMistake};
 use levels::{LEVELS, Level};
 use stats::Stats;
 
@@ -83,19 +83,12 @@ fn play(level: usize) -> GameResult {
         tries += 1;
 
         println!("Your guess: {guess}");
-
-        match guess.cmp(&secret_number) {
-            Ordering::Less => {
-                println!("Too small!");
-                mistake_tracker.record(Ordering::Less);
-            }
-            Ordering::Greater => {
-                println!("Too big!");
-                mistake_tracker.record(Ordering::Greater);
-            }
-            Ordering::Equal => {
-                break;
-            }
+        
+        let comparison_to_secret = guess.cmp(&secret_number);
+        if comparison_to_secret == Ordering::Equal {
+            break;
+        } else {
+            mistake_tracker.record(GuessMistake::new(guess, comparison_to_secret));
         }
         println!("You've used {}/{} tries.", tries, max_tries);
     }
