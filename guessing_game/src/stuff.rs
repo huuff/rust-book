@@ -3,6 +3,7 @@ use std::collections::HashMap;
 #[derive(PartialEq, Eq, Hash, Clone)]
 pub enum PowerUp {
     ExtraTry,
+    Bounds,
 }
 
 pub struct Inventory {
@@ -46,7 +47,13 @@ impl Inventory {
         } else {
             println!("Inventory");
             println!("---------");
-            println!("Extra Try: {}", self.power_ups[&PowerUp::ExtraTry])
+            if self.has(PowerUp::ExtraTry) {
+                println!("Extra Try: {}", self.power_ups[&PowerUp::ExtraTry]);
+            }
+
+            if self.has(PowerUp::Bounds) {
+                println!("Bounds: {}", self.power_ups[&PowerUp::Bounds]);
+            }
         }
     }
 }

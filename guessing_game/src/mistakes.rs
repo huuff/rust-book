@@ -14,13 +14,55 @@ impl GuessMistake {
 }
 
 pub struct MistakeTracker {
-    last_mistake: Option<GuessMistake>,
+    mistakes: Vec<GuessMistake>,
 }
 
 impl MistakeTracker {
     pub fn new() -> MistakeTracker {
         MistakeTracker {
-            last_mistake: None,
+            mistakes: Vec::new(),
+        }
+    }
+
+    pub fn last_mistake(&self) -> Option<&GuessMistake> {
+        return self.mistakes.last();
+    }
+
+    pub fn print_bounds(&self) {
+        if self.mistakes.len() == 0 {
+            println!("You haven't made any guesses yet, so bounds can't be calculated!");
+            return;
+        }
+
+        let lower_bound = self.mistakes
+            .iter()
+            .filter(|it| it.direction == Ordering::Less)
+            .map(|it| it.guess)
+            .max()
+            ;
+        let upper_bound = self.mistakes
+            .iter()
+            .filter(|it| it.direction == Ordering::Greater)
+            .map(|it| it.guess)
+            .min()
+            ;
+
+        if lower_bound.is_some() && upper_bound.is_some() {
+            println!(
+                "The answer is between {} and {}",
+                lower_bound.unwrap(),
+                upper_bound.unwrap(),
+            );
+        } else if lower_bound.is_some() {
+            println!(
+                "The answer is bigger than {}",
+                lower_bound.unwrap(),
+            );
+        } else if upper_bound.is_some() {
+            println!(
+                "The answer is smaller than {}",
+                upper_bound.unwrap(),
+            ) 
         }
     }
 
@@ -37,13 +79,13 @@ impl MistakeTracker {
             },
         }
 
-        if let Some(last_mistake) = &self.last_mistake {
+        if let Some(last_mistake) = &self.last_mistake() {
             let mistake_comparison = new_mistake.guess.cmp(&last_mistake.guess);
             if mistake_comparison == last_mistake.direction {
                 println!("{DISTRACTED_MESSAGE}");
             }
         }
-        self.last_mistake = Some(new_mistake);
+        self.mistakes.push(new_mistake);
     }
 }
 

@@ -63,6 +63,7 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                 println!("These are your options:");
                 println!("* Input an integer to make a guess");
                 println!("* Input 'inventory' to check your inventory");
+                println!("* Input 'powerup _name_' to use a power-up (where _name_ may be one of Bounds, ExtraTry )");
                 println!("* Input 'quit' to exit this level");
                 println!("* Input 'help' to display this help");
             },
@@ -77,6 +78,15 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                             println!("You don't have an ExtraTry!");
                         }
                     },
+                    PowerUp::Bounds => {
+                        if inventory.has(PowerUp::Bounds) {
+                            println!("You used a Bounds!");
+                            mistake_tracker.print_bounds();
+                            inventory.remove(PowerUp::Bounds);
+                        } else {
+                            println!("You don't have a Bounds!");
+                        }
+                    }
                 }
             },
         }
@@ -122,6 +132,9 @@ fn get_game_input() -> GameAction {
                            "extratry" => {
                                 action = Some(GameAction::PowerUp(PowerUp::ExtraTry));
                            }, 
+                           "bounds" => {
+                                action = Some(GameAction::PowerUp(PowerUp::Bounds));
+                           },
                            _ => {
                                 println!("No power up with name {} exists", power_up);
                            }
