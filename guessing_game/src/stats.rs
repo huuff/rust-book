@@ -1,5 +1,6 @@
 use crate::GameResult;
 use crate::words::WORDS;
+use colored::Colorize;
 
 pub struct Stats {
     pub level_results: Vec<u32>,
@@ -21,6 +22,9 @@ impl Stats {
                     tries,
                     WORDS["try"].get_correct_form(tries)
                 );
+                if tries == 1 {
+                    println!("Awesome!");
+                }
             },
             GameResult::Loss => {
                 println!("You lost!");
@@ -38,12 +42,21 @@ impl Stats {
             println!("Previous results:");
             println!("----------------");
             for (i, tries) in self.level_results.iter().enumerate() {
-                println!(
+                let level_string = format!(
                     "Level {}: {} {}",
                     i+1,
                     tries,
                     WORDS["try"].get_correct_form(*tries),
                 );
+                println!(
+                    "{}",
+                    if *tries == 1 {
+                        level_string.green().bold()
+                    } else { 
+                        level_string.white()
+                    }
+                );
+
             }
         }
     }
