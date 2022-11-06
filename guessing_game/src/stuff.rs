@@ -25,10 +25,13 @@ impl Inventory {
         }
     }
 
-    // TODO: Actually print them
     pub fn print(&self) {
         if self.power_ups.len() == 0 {
             println!("You don't have anything in your inventory");
+        } else {
+            println!("Inventory");
+            println!("---------");
+            println!("Extra Try: {}", self.power_ups[&PowerUp::ExtraTry])
         }
     }
 }
