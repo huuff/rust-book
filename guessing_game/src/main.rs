@@ -48,6 +48,10 @@ fn main() {
             Action::Play => {
                 let result = play(stats.current_level());
                 stats.record(result);
+                if stats.current_level() >= LEVELS.len() {
+                    println!("You've won the game! Congratulations!");
+                    break;
+                }
             }
             Action::Stats => {
                 stats.print();
