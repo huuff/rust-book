@@ -11,6 +11,7 @@ pub enum GameResult {
 enum GameAction {
     Guess(u32),
     Quit,
+    Help,
 }
 
 pub fn play(level: usize) -> GameResult {
@@ -46,6 +47,12 @@ pub fn play(level: usize) -> GameResult {
                 println!("Okay!");
                 return GameResult::Loss;
             },
+            GameAction::Help => {
+                println!("These are your options:");
+                println!("* Input an integer to make a guess");
+                println!("* Input 'quit' to exit this level");
+                println!("* Input 'help' to display this help");
+            },
         }
     }
 
@@ -69,6 +76,9 @@ fn get_game_input() -> GameAction {
             match input {
                 "quit" => {
                     action = Some(GameAction::Quit);  
+                },
+                "help" => {
+                    action = Some(GameAction::Help);
                 },
                 _ => {
                     println!("Sorry, I don't know what {} means", input);
