@@ -19,7 +19,7 @@ enum GameAction {
 pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
     println!("LEVEL {}", level + 1);
     println!("---------");
-    let Level { max_number, max_tries } = &LEVELS[level];
+    let Level { max_number, max_tries, .. } = &LEVELS[level];
     println!("Find the secret number between 1 and {}", max_number);
     println!("You've got {max_tries} tries");
 
