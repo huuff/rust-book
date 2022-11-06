@@ -64,6 +64,7 @@ fn play(stats: &mut Stats, level: &mut usize) {
     println!("---------");
     let Level { max_number, max_tries } = &LEVELS[*level];
     println!("Find the secret number between 1 and {}", max_number);
+    println!("You've got {max_tries} tries");
 
     // TODO: try a smaller type for this
     let secret_number = LEVELS[*level].create_secret_number();
@@ -94,6 +95,7 @@ fn play(stats: &mut Stats, level: &mut usize) {
                 break;
             }
         }
+        println!("{} tries remaining.", max_tries - tries);
     }
     *level += 1;
     
