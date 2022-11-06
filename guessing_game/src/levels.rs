@@ -8,7 +8,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.02,
+                chance: 0.05,
             }
         ]
     },
@@ -18,7 +18,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.04,
+                chance: 0.07,
             }
         ]
     },
@@ -28,7 +28,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.06,
+                chance: 0.09,
             }
         ]
     },
@@ -38,7 +38,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.08,
+                chance: 0.11,
             }
         ]
     },
@@ -48,7 +48,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.1,
+                chance: 0.13,
             }
         ]
     },
@@ -58,7 +58,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.12,
+                chance: 0.15,
             }
         ]
     },
@@ -68,7 +68,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.14,
+                chance: 0.17,
             }
         ]
     },
@@ -78,7 +78,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.16,
+                chance: 0.19,
             }
         ]
     },
@@ -88,7 +88,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.2,
+                chance: 0.21,
             }
         ]
     },
@@ -98,7 +98,7 @@ pub static LEVELS: [Level; 10] = [
         possible_drops: [
             PossibleDrop {
                 power_up: PowerUp::ExtraTry,
-                chance: 0.22,
+                chance: 0.23,
             }
         ]
     }
@@ -121,12 +121,17 @@ impl Level {
         return rand::thread_rng().gen_range(1..=self.max_number);
     }
 
-    pub fn get_maybe_drop(&self) -> Option<&PowerUp> {
+    pub fn get_maybe_drop(&self) -> Option<PowerUp> {
         let mut rng = rand::thread_rng();
         for possible_drop in self.possible_drops.iter() {
             let random = rng.gen::<f64>();
             if random < possible_drop.chance {
-                return Some(&possible_drop.power_up);
+                match possible_drop.power_up {
+                    PowerUp::ExtraTry => {
+                        println!("You found an ExtraTry!");
+                    }
+                };
+                return Some(possible_drop.power_up.clone());
             }
         }
 

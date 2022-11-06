@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Clone)]
 pub enum PowerUp {
     ExtraTry,
 }
@@ -25,6 +25,7 @@ impl Inventory {
         }
     }
 
+    // TODO: Actually print them
     pub fn print(&self) {
         if self.power_ups.len() == 0 {
             println!("You don't have anything in your inventory");
