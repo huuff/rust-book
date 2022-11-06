@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use crate::bounds::Bounds;
 
 const DISTRACTED_MESSAGE: &str = "Are you paying attention?";
 
@@ -29,11 +30,6 @@ impl MistakeTracker {
     }
 
     pub fn print_bounds(&self) {
-        if self.mistakes.len() == 0 {
-            println!("You haven't made any guesses yet, so bounds can't be calculated!");
-            return;
-        }
-
         let lower_bound = self.mistakes
             .iter()
             .filter(|it| it.direction == Ordering::Less)
@@ -47,23 +43,12 @@ impl MistakeTracker {
             .min()
             ;
 
-        if lower_bound.is_some() && upper_bound.is_some() {
-            println!(
-                "The answer is between {} and {}",
-                lower_bound.unwrap(),
-                upper_bound.unwrap(),
-            );
-        } else if lower_bound.is_some() {
-            println!(
-                "The answer is bigger than {}",
-                lower_bound.unwrap(),
-            );
-        } else if upper_bound.is_some() {
-            println!(
-                "The answer is smaller than {}",
-                upper_bound.unwrap(),
-            ) 
-        }
+        let bounds = Bounds {
+            lower: lower_bound,
+            upper: upper_bound,
+        };
+
+        bounds.print();
     }
 
     pub fn record(&mut self, new_mistake: GuessMistake) {

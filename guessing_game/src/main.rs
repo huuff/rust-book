@@ -5,6 +5,7 @@ mod stats;
 mod game;
 mod input;
 mod stuff;
+mod bounds;
 
 use levels::LEVELS;
 use stats::Stats;
