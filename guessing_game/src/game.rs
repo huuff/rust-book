@@ -81,7 +81,8 @@ pub fn play(level: usize, inventory: &mut Inventory) -> GameResult {
                     PowerUp::Bounds => {
                         if inventory.has(PowerUp::Bounds) {
                             println!("You used a Bounds!");
-                            mistake_tracker.print_bounds();
+                            let bounds = mistake_tracker.create_bounds();
+                            bounds.print();
                             inventory.remove(PowerUp::Bounds);
                         } else {
                             println!("You don't have a Bounds!");

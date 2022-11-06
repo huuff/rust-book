@@ -29,7 +29,7 @@ impl MistakeTracker {
         return self.mistakes.last();
     }
 
-    pub fn print_bounds(&self) {
+    pub fn create_bounds(&self) -> Bounds {
         let lower_bound = self.mistakes
             .iter()
             .filter(|it| it.direction == Ordering::Less)
@@ -43,12 +43,10 @@ impl MistakeTracker {
             .min()
             ;
 
-        let bounds = Bounds {
+        return Bounds {
             lower: lower_bound,
             upper: upper_bound,
         };
-
-        bounds.print();
     }
 
     pub fn record(&mut self, new_mistake: GuessMistake) {
